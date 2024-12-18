@@ -1,0 +1,41 @@
+F 0
+s 3 0 1 2
+i 11 Authorization_code_Request Invalid_login Invalid_password Invalid_redirect_URI Invalid_client_id Invalid_client_secret Invalid_authorization_code Access_Request Invalid_access_token Access_token_Request Old_expires_in_Access_Request
+o 5 200 302 400 401 500
+n0 0
+p 33
+0 Authorization_code_Request 1 302
+0 Invalid_login 0 500
+0 Invalid_password 0 500
+0 Invalid_client_id 0 400
+0 Invalid_redirect_URI 0 400
+0 Invalid_authorization_code 0 400
+0 Access_Request 0 400
+0 Invalid_access_token 0 400
+0 Access_token_Request 0 400
+0 Invalid_client_secret 0 400
+0 Old_expires_in_Access_Request 0 400
+
+1 Authorization_code_Request 1 400
+1 Invalid_login 1 400
+1 Invalid_password 1 400
+1 Invalid_client_id 0 400
+1 Invalid_redirect_URI 0 400
+1 Invalid_authorization_code 0 400
+1 Access_Request 1 400
+1 Invalid_access_token 1 400
+1 Access_token_Request 2 200
+1 Invalid_client_secret 0 401
+1 Old_expires_in_Access_Request 1 400
+
+2 Authorization_code_Request 2 401
+2 Invalid_login 2 401
+2 Invalid_password 2 401
+2 Invalid_client_id 2 401
+2 Invalid_redirect_URI 2 401
+2 Invalid_authorization_code 2 401
+2 Access_Request 2 200
+2 Invalid_access_token 0 401
+2 Access_token_Request 2 401
+2 Invalid_client_secret 2 401
+2 Old_expires_in_Access_Request 0 401
