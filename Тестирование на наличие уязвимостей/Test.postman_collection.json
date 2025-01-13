@@ -1,0 +1,909 @@
+{
+	"info": {
+		"_postman_id": "0425c3fa-8832-4ac0-9152-d0e8e114ba3b",
+		"name": "Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31174540"
+	},
+	"item": [
+		{
+			"name": "Недостаточный контроль URI",
+			"item": [
+				{
+					"name": "Get_auth_code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false,
+						"followOriginalHttpMethod": false,
+						"insecureHTTPParser": false,
+						"followRedirects": false,
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "test_user",
+									"type": "text"
+								},
+								{
+									"key": "confirm",
+									"value": "on",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://error_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/authorize?response_type=code&client_id=mGwjWvKPGtmXozGomKucC3rj&scope=profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "mGwjWvKPGtmXozGomKucC3rj"
+								},
+								{
+									"key": "scope",
+									"value": "profile"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Повторное использование кода авторизации",
+			"item": [
+				{
+					"name": "Get_auth_code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var str = pm.response.headers.get(\"Location\").split(\"?\");\r",
+									"pm.globals.set(\"code\", str[1].split(\"=\")[1])"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false,
+						"followOriginalHttpMethod": false,
+						"insecureHTTPParser": false,
+						"followRedirects": false,
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "test_user",
+									"type": "text"
+								},
+								{
+									"key": "confirm",
+									"value": "on",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/authorize?response_type=code&client_id=xiYMmFtGOPG548JLACOCLUfq&scope=profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "xiYMmFtGOPG548JLACOCLUfq"
+								},
+								{
+									"key": "scope",
+									"value": "profile"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_access_token1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "client_id",
+									"value": "xiYMmFtGOPG548JLACOCLUfq",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "0t9nhvg8XrnJYwGxxpN4RMk3THwlivWExUHQ9OequKMN0gQ7",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "profile",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/token",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_access_token2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "client_id",
+									"value": "xiYMmFtGOPG548JLACOCLUfq",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "0t9nhvg8XrnJYwGxxpN4RMk3THwlivWExUHQ9OequKMN0gQ7",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "profile",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/token",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Код авторизации для другого клиента",
+			"item": [
+				{
+					"name": "Get_auth_code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var str = pm.response.headers.get(\"Location\").split(\"?\");\r",
+									"pm.globals.set(\"code\", str[1].split(\"=\")[1])"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false,
+						"followOriginalHttpMethod": false,
+						"insecureHTTPParser": false,
+						"followRedirects": false,
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "test_user",
+									"type": "text"
+								},
+								{
+									"key": "confirm",
+									"value": "on",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/authorize?response_type=code&client_id=mGwjWvKPGtmXozGomKucC3rj&scope=profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "mGwjWvKPGtmXozGomKucC3rj"
+								},
+								{
+									"key": "scope",
+									"value": "profile"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_access_token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "client_id",
+									"value": "xiYMmFtGOPG548JLACOCLUfq",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "0t9nhvg8XrnJYwGxxpN4RMk3THwlivWExUHQ9OequKMN0gQ7",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "profile",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "e5QRiKgFLu5wxCyDVywK7HnO3muWF5xKRfLXKrLaqOiKu0iV",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/token",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Проверка времени жизни токена доступа",
+			"item": [
+				{
+					"name": "Get_auth_code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var str = pm.response.headers.get(\"Location\").split(\"?\");\r",
+									"pm.globals.set(\"code\", str[1].split(\"=\")[1])"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false,
+						"followOriginalHttpMethod": false,
+						"insecureHTTPParser": false,
+						"followRedirects": false,
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "test_user",
+									"type": "text"
+								},
+								{
+									"key": "confirm",
+									"value": "on",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/authorize?response_type=code&client_id=xiYMmFtGOPG548JLACOCLUfq&scope=profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "xiYMmFtGOPG548JLACOCLUfq"
+								},
+								{
+									"key": "scope",
+									"value": "profile"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_access_token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "client_id",
+									"value": "xiYMmFtGOPG548JLACOCLUfq",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "0t9nhvg8XrnJYwGxxpN4RMk3THwlivWExUHQ9OequKMN0gQ7",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "profile",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/token",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_access",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function(){}, 10000);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/me",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Авторизация",
+			"item": [
+				{
+					"name": "Get_auth_code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var str = pm.response.headers.get(\"Location\").split(\"?\");\r",
+									"pm.globals.set(\"code\", str[1].split(\"=\")[1])"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false,
+						"followOriginalHttpMethod": false,
+						"insecureHTTPParser": false,
+						"followRedirects": false,
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "test_user",
+									"type": "text"
+								},
+								{
+									"key": "confirm",
+									"value": "on",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/authorize?response_type=code&client_id=xiYMmFtGOPG548JLACOCLUfq&scope=profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "xiYMmFtGOPG548JLACOCLUfq"
+								},
+								{
+									"key": "scope",
+									"value": "profile"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_access_token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody)\r",
+									"\r",
+									"pm.globals.set(\"token\", data.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "client_id",
+									"value": "xiYMmFtGOPG548JLACOCLUfq",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "0t9nhvg8XrnJYwGxxpN4RMk3THwlivWExUHQ9OequKMN0gQ7",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "profile",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://test_uri.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/oauth/token",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_access",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/me",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

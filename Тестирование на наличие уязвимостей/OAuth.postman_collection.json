@@ -1,0 +1,459 @@
+{
+	"info": {
+		"_postman_id": "6196a245-5bce-47ad-a09f-cba7b95f2d22",
+		"name": "OAuth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31174540"
+	},
+	"item": [
+		{
+			"name": "Change redirect_uri",
+			"item": [
+				{
+					"name": "Запрос на авторизацию",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var str = pm.response.headers.get(\"location\").split(\"&\");\r",
+									"\r",
+									"pm.globals.set(\"state\", str[0].split(\"=\")[1])\r",
+									"pm.globals.set(\"scope\", str[1].split(\"=\")[1])\r",
+									"pm.globals.set(\"redirect_uri\", str[4].split(\"=\")[1])\r",
+									"pm.globals.set(\"client_id\", str[5].split(\"=\")[1])"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": false,
+						"disableBodyPruning": true,
+						"insecureHTTPParser": true,
+						"strictSSL": true,
+						"removeRefererHeaderOnRedirect": false
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientId",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/html; charset=utf-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://127.0.0.1/oauth/authorize",
+							"protocol": "https",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"oauth",
+								"authorize"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Подмена uri при переадресации",
+					"protocolProfileBehavior": {
+						"followRedirects": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://oauth.vk.com/authorize?state={{state}}&scope={{scope}}&response_type=code&approval_prompt=auto&redirect_uri=https://knigavuhe.org/login/social_cb/vk/&client_id={{client_id}}",
+							"protocol": "https",
+							"host": [
+								"oauth",
+								"vk",
+								"com"
+							],
+							"path": [
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "{{state}}"
+								},
+								{
+									"key": "scope",
+									"value": "{{scope}}"
+								},
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "approval_prompt",
+									"value": "auto"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://knigavuhe.org/login/social_cb/vk/"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Old code",
+			"item": [
+				{
+					"name": "Запрос с использованным code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"strictSSL": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://ficbook.net/social_connect?socialType=2&code=e765730d9a3dc0608f&state=ee843dba70da322308b66ca9369c5809",
+							"protocol": "https",
+							"host": [
+								"ficbook",
+								"net"
+							],
+							"path": [
+								"social_connect"
+							],
+							"query": [
+								{
+									"key": "socialType",
+									"value": "2"
+								},
+								{
+									"key": "code",
+									"value": "e765730d9a3dc0608f"
+								},
+								{
+									"key": "state",
+									"value": "ee843dba70da322308b66ca9369c5809"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Запрос к ресурсу доступному только авторизированному пользователю",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://ficbook.net/collections/18722616",
+							"protocol": "https",
+							"host": [
+								"ficbook",
+								"net"
+							],
+							"path": [
+								"collections",
+								"18722616"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "https://oauth.vk.com/authorize",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": false
+			},
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "state",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://ficbook.net/social_connect/socialType/2",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "code",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://oauth.vk.com/authorize?state=f446edc523bb63e6664d756de49c229e&amp;scope=email%2Cfriends%2Coffline&amp;response_type=code&amp;approval_prompt=auto&amp;redirect_uri=https%3A%2F%2Fficbook.net%2Fsocial_connect%3FsocialType%3D2&amp;client_id=5739535",
+					"protocol": "https",
+					"host": [
+						"oauth",
+						"vk",
+						"com"
+					],
+					"path": [
+						"authorize"
+					],
+					"query": [
+						{
+							"key": "state",
+							"value": "f446edc523bb63e6664d756de49c229e"
+						},
+						{
+							"key": "amp;scope",
+							"value": "email%2Cfriends%2Coffline"
+						},
+						{
+							"key": "amp;response_type",
+							"value": "code"
+						},
+						{
+							"key": "amp;approval_prompt",
+							"value": "auto"
+						},
+						{
+							"key": "amp;redirect_uri",
+							"value": "https%3A%2F%2Fficbook.net%2Fsocial_connect%3FsocialType%3D2"
+						},
+						{
+							"key": "amp;client_id",
+							"value": "5739535"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://oauth.vk.com/authorize?state=ab0de9cdd3cb9465a2da0189119b5047&scope=email%2Cfriends%2Coffline&response_type=code&approval_prompt=auto&redirect_uri=https%3A%2F%2Fficbook.net%2Fsocial_connect%3FsocialType%3D2&client_id=5739535",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Host",
+						"value": "oauth.vk.com"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
+					},
+					{
+						"key": "Accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br"
+					},
+					{
+						"key": "Referer",
+						"value": "https://ficbook.net/"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Cookie",
+						"value": "remixlang=0; remixstlid=9100819831450509686_uorYLcFUqMjkIfOKmZ0sgyLZZV30wR1FfCV8co8sSkD; remixua=35%7C-1%7C320%7C2330222445; remixuas=NjE4ZjUxZWU2NDA2MGM1ZTZiYTlhMzMz; remixstid=1893876399_Rk8vZKGrKgKvKzfCpZGOZI684SWBXl0UPpQyAykNUjL; remixuacck=a54d893d917aed5780; remixsuc=1%3A; tmr_lvid=9b7fec8decb03ce63c298279d0226c29; tmr_lvidTS=1713622282598; remixnsid=vk1.a.48rOefB-ujPiX7TGXfuxLD6dZ9nudCzSZFwrXLd6XNX9RjUygAauYIO853q22GJuVSlUNWy8A1DE2rzuD5gS-4W26kBT05WM1nAGvUfNRTw34xeG21V3k6S92KqoCpqyJuS9y1gcZqaaYEYkjAqxXCVpTxxufMhOHFefxVLiEWTOIZ3exkD8i-_NORiOTmnH; remixscreen_width=1536; remixscreen_height=864; remixscreen_dpr=1.25; remixscreen_depth=24; remixscreen_orient=1; remixscreen_winzoom=1; remixsf=1; remixdark_color_scheme=0; remixcolor_scheme_mode=auto; remixdt=14400; remixgp=55d79a35e8fd9507bf84af53220cb460; remixnttpid=vk1.a.xNkCegbv56ev64koF83uKMxUiMJ_oOuDa46d-n2vrWpEzw3J4TJhAIRej1Uq4PSUpGMMUVjwHllvD4dDkhM12i9BB4sZ9b4-75ALsghHnRdyiT7nf8jJSVyzTaYBqvcfVgI9whrGCq_SsPVLhLOxhbOI9P4IcpVa2eChzEpMTz6Wwcm0vUClAdJuqSYfXjEO; remixsid=1_5mYVOEQGMdvoHB7TwWwhkJnJA5viVsezLsctT1Gis2t81MJykEwvh1wsRwzftty_15on1o6ml6wffLLpGjK1EA; remixdmgr_tmp=4a0c702e4f25530d9f42a868b98def99d290078b6372a628124c664b1979f615"
+					},
+					{
+						"key": "Upgrade-Insecure-Requests",
+						"value": "1"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "document"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "navigate"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "cross-site"
+					},
+					{
+						"key": "Sec-Fetch-User",
+						"value": "?1"
+					},
+					{
+						"key": "host",
+						"value": "oauth.vk.com"
+					}
+				],
+				"url": {
+					"raw": "https://oauth.vk.com/authorize?state=ab0de9cdd3cb9465a2da0189119b5047&scope=email%2Cfriends%2Coffline&response_type=code&approval_prompt=auto&redirect_uri=https%3A%2F%2Fficbook.net%2Fsocial_connect%3FsocialType%3D2&client_id=5739535",
+					"protocol": "https",
+					"host": [
+						"oauth",
+						"vk",
+						"com"
+					],
+					"path": [
+						"authorize"
+					],
+					"query": [
+						{
+							"key": "state",
+							"value": "ab0de9cdd3cb9465a2da0189119b5047"
+						},
+						{
+							"key": "scope",
+							"value": "email%2Cfriends%2Coffline"
+						},
+						{
+							"key": "response_type",
+							"value": "code"
+						},
+						{
+							"key": "approval_prompt",
+							"value": "auto"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https%3A%2F%2Fficbook.net%2Fsocial_connect%3FsocialType%3D2"
+						},
+						{
+							"key": "client_id",
+							"value": "5739535"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "uri",
+			"value": ""
+		}
+	]
+}
